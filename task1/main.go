@@ -79,6 +79,10 @@ func (r *ReportTask) Execute() error {
 	return nil
 }
 
+func (r *ReportTask) Info() string {
+	return fmt.Sprintf("ReportTask %s - %s", r.ID, r.Description)
+}
+
 func (tm *TaskManager) AddTask(t Task) {
 	tm.tasks = append(tm.tasks, t)
 }
@@ -112,5 +116,16 @@ func (tm *TaskManager) RetryFailedTasks() {
 }
 
 func main() {
+	tm := &TaskManager{}
 
+	tm.AddTask(&EmailTask{BaseTask{"1", time.Now(), "Send Email to User"}})
+	tm.AddTask(&SMSTask{BaseTask{"2", time.Now(), "Send SMS Notification"}})
+	tm.AddTask(&ReportTask{BaseTask{"3", time.Now(), "Send Weekly Report"}})
+	tm.AddTask(&EmailTask{BaseTask{"4", time.Now(), "Send Newsletter"}})
+	tm.AddTask(&SMSTask{BaseTask{"5", time.Now(), "Verify Phone Number"}})
+	tm.AddTask(&ReportTask{BaseTask{"6", time.Now(), "Send Monthly Report"}})
+
+	tm.ExecuteAll()
+
+	tm.RetryFailedTasks()
 }
