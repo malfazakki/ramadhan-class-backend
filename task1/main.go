@@ -99,7 +99,7 @@ func (tm *TaskManager) ExecuteAll() {
 	}
 }
 
-func (tm *TaskManager) RetryFailedTask() {
+func (tm *TaskManager) RetryFailedTasks() {
 	if len(tm.failed) == 0 {
 		fmt.Println("No failed tasks to retry")
 		return
