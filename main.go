@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"reflect"
 	"time"
 )
 
@@ -27,6 +28,11 @@ type SMSTask struct {
 
 type ReportTask struct {
 	BaseTask
+}
+
+type TaskManager struct {
+	tasks  []Task
+	failed []Task
 }
 
 func (e *EmailTask) Execute() error {
@@ -71,6 +77,38 @@ func (r *ReportTask) Execute() error {
 	}
 
 	return nil
+}
+
+func (tm *TaskManager) AddTask(t Task) {
+	tm.tasks = append(tm.tasks, t)
+}
+
+func (tm *TaskManager) ExecuteAll() {
+	for _, task := range tm.tasks {
+		start := time.Now()
+		err := task.Execute()
+		duration := time.Since(start)
+		typeName := reflect.TypeOf(task).Elem().Name()
+
+		if err != nil {
+			fmt.Printf("[ERROR] %s failed: %s\n", typeName, err)
+			tm.failed = append(tm.failed, task)
+		} else {
+			fmt.Printf("[SUCCESS] %s completed in %v\n", typeName, duration)
+		}
+	}
+}
+
+func (tm *TaskManager) RetryFailedTask() {
+	if len(tm.failed) == 0 {
+		fmt.Println("No failed tasks to retry")
+		return
+	}
+
+	fmt.Println("Retrying failed tasks...")
+	tm.tasks = tm.failed
+	tm.failed = nil
+	tm.ExecuteAll()
 }
 
 func main() {
