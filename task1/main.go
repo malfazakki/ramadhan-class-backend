@@ -38,9 +38,9 @@ type TaskManager struct {
 func (e *EmailTask) Execute() error {
 	fmt.Printf("Executing Email Task: %s\n", e.ID)
 
-	time.Sleep(time.Duration(rand.Intn(3)+1) * time.Second)
+	time.Sleep(time.Duration(rand.Intn(3)+1) * time.Second) // Simulate execution time
 
-	if rand.Float32() < .2 {
+	if rand.Float32() < .2 { // Simulate 20% failed probability
 		return fmt.Errorf("EmailTask %s failed", e.ID)
 	}
 
@@ -96,7 +96,7 @@ func (tm *TaskManager) ExecuteAll() {
 
 		if err != nil {
 			fmt.Printf("[ERROR] %s failed: %s\n", typeName, err)
-			tm.failed = append(tm.failed, task)
+			tm.failed = append(tm.failed, task) // Store failed tasks
 		} else {
 			fmt.Printf("[SUCCESS] %s completed in %v\n", typeName, duration)
 		}
