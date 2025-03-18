@@ -7,3 +7,7 @@ cd <folder_name>
 go run main.go
 ```
 
+
+### Task List:
+
+1. OOP Task Manager in Golang.
